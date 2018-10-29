@@ -7,6 +7,7 @@ const ctx = document.getElementById('canvas').getContext('2d');
 // Global listeners and variables
 
 const walls = [];
+const freeEspace = [];
 
 // Constructor Maze
 
@@ -21,6 +22,14 @@ Maze.prototype.draw = function () {
   ctx.fillStyle = pattern;
   ctx.fillRect(0, 0, 1200, 600);
 };
+
+Maze.prototype.drawMaze = function () {
+  walls.forEach((wall) => {
+    ctx.fillStyle = 'black';
+    ctx.fillRect(wall.posX, wall.posY, 20, 20);
+  });
+};
+
 Maze.prototype.CreateMaze = function () {
   const map = [[1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
     [1, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
@@ -54,18 +63,20 @@ Maze.prototype.CreateMaze = function () {
     [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1]];
 
   function drawTile(x, y) {
-    ctx.fillRect(x * 20, y * 20, 20, 20);
     walls.push({
       posX: x * 20,
       posY: y * 20,
     });
   }
-
-  ctx.fillStyle = 'black';
   map.forEach((row, i) => {
     row.forEach((tile, j) => {
-      if (tile !== 0) {
+      if (tile === 1) {
         drawTile(j, i);
+      } else {
+        freeEspace.push({
+          posX: j * 20,
+          posY: i * 20,
+        });
       }
     });
   });
@@ -90,22 +101,21 @@ Hero.prototype.Draw = function () {
 
 Hero.prototype.moveRight = function () {
   this.posX += 10;
-  if (this.DetectColision()) this.posX -= 10;
+  if (this.detectColision()) this.posX -= 10;
 };
 Hero.prototype.moveLeft = function () {
   this.posX -= 10;
-  if (this.DetectColision()) this.posX += 10;
+  if (this.detectColision()) this.posX += 10;
 };
 Hero.prototype.moveUp = function () {
   this.posY -= 10;
-  if (this.DetectColision()) this.posY += 10;
+  if (this.detectColision()) this.posY += 10;
 };
 Hero.prototype.moveDown = function () {
   this.posY += 10;
-  if (this.DetectColision()) this.posY -= 10;
+  if (this.detectColision()) this.posY -= 10;
 };
 Hero.prototype.move = function (hero, e) {
-  console.log(this);
   switch (e.keyCode) {
     case 37:
       this.moveLeft();
@@ -125,55 +135,62 @@ Hero.prototype.move = function (hero, e) {
     default:
   }
 };
-Hero.prototype.DetectColision = function () {
-  let colision = false;
+
+Hero.prototype.detectColision = function () {
+  // let colision = false;
+  // console.log(this);
   for (let i = 0; i < walls.length; i += 1) {
     if (this.posX < walls[i].posX + 20
       && this.posX + 20 > walls[i].posX
       && this.posY < walls[i].posY + 20
       && 20 + this.posY > walls[i].posY) {
       // console.log('colision');
-      colision = true;
+      return true;
     }
   }
-  console.log(colision);
-  return colision;
+  return false;
 };
 
 // Contructor of Equa
 
 function Equa() {
-  this.posX;
-  this.posY;
+  this.posX = Math.floor(Math.random() * (79) * 10);
+  this.posY = Math.floor(Math.random() * (59) * 10);
   this.sound;
 }
 
 Equa.prototype.randomPosition = function () {
-  const randomX = Math.floor(Math.random() * (780 - 20 + 1) + 20);
-  const randomY = Math.floor(Math.random() * (580 - 20 + 1) + 20);
-  this.posX = randomX;
-  this.posY = randomY;
+  const arrPos = Math.floor(Math.random() * freeEspace.length);
+  this.posX = freeEspace[arrPos].posX;
+  this.posY = freeEspace[arrPos].posY;
 };
+
 
 Equa.prototype.draw = function () {
   ctx.fillStyle = 'pink';
   ctx.fillRect(this.posX, this.posY, 20, 20);
 };
 
-const myMaze = new Maze();
-const myHero = new Hero();
-const myEqua = new Equa();
-myEqua.randomPosition();
+let myMaze;
+let myHero;
+let myEqua;
+// myEqua.randomPosition();
 
 function start() {
   window.addEventListener('keydown', (e) => {
     myHero.move(myHero, e);
   }, false);
+  myMaze = new Maze();
+  myHero = new Hero();
+  myEqua = new Equa();
+  myMaze.CreateMaze();
+  myEqua.randomPosition();
   setInterval(engine, 10);
 }
 function engine() {
+  ctx.clearRect(0, 0, 800, 600);
   myMaze.draw();
-  myMaze.CreateMaze();
+  myMaze.drawMaze();
   myHero.Draw();
   myEqua.draw();
 }
