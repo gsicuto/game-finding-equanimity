@@ -158,23 +158,38 @@ function Equa() {
   this.posY = Math.floor(Math.random() * (59) * 10);
   this.sound;
 }
-
 Equa.prototype.randomPosition = function () {
   const arrPos = Math.floor(Math.random() * freeEspace.length);
   this.posX = freeEspace[arrPos].posX;
   this.posY = freeEspace[arrPos].posY;
 };
-
-
 Equa.prototype.draw = function () {
   ctx.fillStyle = 'pink';
+  ctx.fillRect(this.posX, this.posY, 20, 20);
+};
+
+// Construtor Nimity
+
+function Nimity() {
+  this.posX = Math.floor(Math.random() * (79) * 10);
+  this.posY = Math.floor(Math.random() * (59) * 10);
+  this.sound;
+}
+Nimity.prototype.randomPosition = function () {
+  const arrPos = Math.floor(Math.random() * freeEspace.length);
+  this.posX = freeEspace[arrPos].posX;
+  this.posY = freeEspace[arrPos].posY;
+}
+
+Nimity.prototype.draw = function () {
+  ctx.fillStyle = 'blue';
   ctx.fillRect(this.posX, this.posY, 20, 20);
 };
 
 let myMaze;
 let myHero;
 let myEqua;
-// myEqua.randomPosition();
+let myNimity;
 
 function start() {
   window.addEventListener('keydown', (e) => {
@@ -183,8 +198,10 @@ function start() {
   myMaze = new Maze();
   myHero = new Hero();
   myEqua = new Equa();
+  myNimity = new Nimity();
   myMaze.CreateMaze();
   myEqua.randomPosition();
+  myNimity.randomPosition();
   setInterval(engine, 10);
 }
 function engine() {
@@ -193,4 +210,5 @@ function engine() {
   myMaze.drawMaze();
   myHero.Draw();
   myEqua.draw();
+  myNimity.draw();
 }
