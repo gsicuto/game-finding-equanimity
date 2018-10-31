@@ -1,10 +1,13 @@
 *{
   margin: 0;
   padding: 0;
+  font: white;
 }
-
+body {
+  background-image: url('../Img/backGroundPage.jpeg');
+}
 header {
-  background-color: aquamarine;
+  background-color: purple;
   height: 50px;
   width: 100%;
   margin-top: 0;
@@ -21,12 +24,11 @@ header {
   display: flex;
   justify-content: center;
   align-items: center;
+  color: white;
 }
-div {
+/* div {
   margin: 2px 100px;
-}
+} */
 #game {
-  display: flex;
-  justify-content: center;
-  align-items: center;
+  margin-top: 20px;
 }

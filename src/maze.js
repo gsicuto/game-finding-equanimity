@@ -112,7 +112,7 @@ function Hero(argName) {
   this.posY = 30;
   this.itens = [];
   this.equa = false;
-  this.score = 0;
+  this.score = 100000;
   this.nimity = false;
   this.heroImg = new Image();
 }
@@ -200,7 +200,7 @@ Hero.prototype.detectEquaNimity = function (argEqua, argNimity) {
     && this.posY < argEqua.posY + 20
     && 20 + this.posY > argEqua.posY) {
     this.equa = true;
-    this.score += 100;
+    this.score += this.score;
     argEqua.posX = 0;
     argEqua.posY = 0;
   }
@@ -209,7 +209,7 @@ Hero.prototype.detectEquaNimity = function (argEqua, argNimity) {
     && this.posY < argNimity.posY + 20
     && 20 + this.posY > argNimity.posY) {
     this.nimity = true;
-    this.score += 100;
+    this.score += this.score;
     argNimity.posX = 0;
     argNimity.posY = 0;
   }
@@ -289,6 +289,7 @@ let player = 1;
 
 function engine(argumentHero) {
   frame += 1;
+  argumentHero.score -= 10;
   const game = window.requestAnimationFrame(() => {
     engine(argumentHero);
   });
@@ -316,14 +317,25 @@ function engine(argumentHero) {
 
 function endGame(argHero, argGame) {
   if (argHero.equa && argHero.nimity) {
-    argHero.score += (40000 - frame);
+    // argHero.score += (40000 - frame);
     if (player === 1) document.getElementById('score1').innerHTML = argHero.score;
     if (player === 2) document.getElementById('score2').innerHTML = argHero.score;
     alert(`${argHero.name} you finish the game`);
-    window.cancelAnimationFrame(argGame);
     player += 1;
+    window.cancelAnimationFrame(argGame);
+    if (player === 3) showWinner();
+    }
   }
-}
+
+
+function showWinner() {
+  let winner;
+  if (myHero.score > myHero2.score) winner = myHero;
+  if (myHero2.score > myHero.score) winner = myHero2;
+  ctx.fillStyle = 'red';
+  ctx.font='48px serif';
+  ctx.fillText(`${winner.name} win with ${winner.score} score`, 50, 50);
+ } 
 
 function start() {
   if (player === 1) {
