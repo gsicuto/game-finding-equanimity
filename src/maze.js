@@ -8,7 +8,7 @@ const ctx = document.getElementById('canvas').getContext('2d');
 
 const walls = [];
 const freeEspace = [];
-
+let frame = 0;
 // Constructor Maze
 
 function Maze() {
@@ -17,6 +17,7 @@ function Maze() {
   this.backGround = new Image();
   this.backGround.src = 'assets/Img/backGround.png';
 }
+
 Maze.prototype.draw = function () {
   const pattern = ctx.createPattern(this.backGround, 'repeat');
   ctx.fillStyle = pattern;
@@ -28,6 +29,26 @@ Maze.prototype.drawMaze = function () {
     ctx.fillStyle = 'black';
     ctx.fillRect(wall.posX, wall.posY, 20, 20);
   });
+};
+
+Maze.prototype.drawDarkness = function (argHero) {
+  // ctx.globalCompositeOperation = "multiply";
+  ctx.fillStyle = 'rgba(0, 0, 0, 1)';
+  ctx.fillRect(0, 0, 1200, 600);
+
+  const gradient = ctx.createRadialGradient(argHero.posX + 10, argHero.posY + 10, 0, argHero.posX + 10, argHero.posY, 100);
+  gradient.addColorStop(0, 'rgba(247, 247, 247, 0)');
+  gradient.addColorStop(0.25, 'rgba(247, 247, 247, 0.4)');
+  gradient.addColorStop(0.5, 'rgba(247, 247, 247, 0.6)');
+  gradient.addColorStop(0.75, 'rgba(247, 247, 247, 0.8)');
+  gradient.addColorStop(1, 'rgba(247, 247, 247, 1)');
+  ctx.beginPath();
+  // ctx.globalCompositeOperation = 'destination-out';
+  ctx.arc(argHero.posX + 10, argHero.posY + 10, 40, 0, 2 * Math.PI);
+  ctx.fillStyle = gradient;
+  ctx.fill();
+  // ctx.globalCompositeOperation = "source-over";
+  ctx.closePath();
 };
 
 Maze.prototype.CreateMaze = function () {
@@ -91,12 +112,37 @@ function Hero(argName) {
   this.posY = 30;
   this.itens = [];
   this.equa = false;
-  this.namity = false;
+  this.score = 0;
+  this.nimity = false;
+  this.heroImg = new Image();
 }
 
+
 Hero.prototype.Draw = function () {
+  const gradient = ctx.createRadialGradient(this.posX + 10, this.posY + 10, 0, this.posX + 10, this.posY, 100);
+  gradient.addColorStop(0, 'rgba(247, 247, 247, 0)');
+  gradient.addColorStop(0.25, 'rgba(247, 247, 247, 0.4)');
+  gradient.addColorStop(0.5, 'rgba(247, 247, 247, 0.6)');
+  gradient.addColorStop(0.75, 'rgba(247, 247, 247, 0.8)');
+  gradient.addColorStop(1, 'rgba(247, 247, 247, 1)');
   ctx.fillStyle = 'red';
   ctx.fillRect(this.posX, this.posY, 20, 20);
+  // ctx.beginPath();
+  // ctx.arc(this.posX + 10, this.posY + 10, 40, 0, 2 * Math.PI);
+  // ctx.fillStyle = gradient;
+  // ctx.fill();
+  // ctx.closePath();
+};
+
+Hero.prototype.drawLight = function () {
+  // ctx.globalCompositeOperation = 'luminosity';
+  // ctx.globalAlpha = 1;
+  ctx.beginPath();
+  ctx.arc(this.posX + 10, this.posY + 10, 40, 0, 2 * Math.PI);
+  // ctx.fillStyle = gradient;
+  // ctx.fill();
+  ctx.closePath();
+  // ctx.clip();
 };
 
 Hero.prototype.moveRight = function () {
@@ -137,21 +183,62 @@ Hero.prototype.move = function (hero, e) {
 };
 
 Hero.prototype.detectColision = function () {
-  // let colision = false;
-  // console.log(this);
   for (let i = 0; i < walls.length; i += 1) {
     if (this.posX < walls[i].posX + 20
       && this.posX + 20 > walls[i].posX
       && this.posY < walls[i].posY + 20
       && 20 + this.posY > walls[i].posY) {
-      // console.log('colision');
       return true;
     }
   }
   return false;
 };
 
-// Contructor of Equa
+Hero.prototype.detectEquaNimity = function (argEqua, argNimity) {
+  if (this.posX < argEqua.posX + 20
+    && this.posX + 20 > argEqua.posX
+    && this.posY < argEqua.posY + 20
+    && 20 + this.posY > argEqua.posY) {
+    this.equa = true;
+    this.score += 100;
+    argEqua.posX = 0;
+    argEqua.posY = 0;
+  }
+  if (this.posX < argNimity.posX + 20
+    && this.posX + 20 > argNimity.posX
+    && this.posY < argNimity.posY + 20
+    && 20 + this.posY > argNimity.posY) {
+    this.nimity = true;
+    this.score += 100;
+    argNimity.posX = 0;
+    argNimity.posY = 0;
+  }
+};
+
+// Constructor of Evil
+
+function Evil() {
+  this.name = 'Evil';
+  this.ligthSize = 60;
+  this.posX = 0;
+  this.posY = 0;
+  this.itens = [];
+  this.equa = false;
+  this.nimity = false;
+  this.evilImg = new Image();
+}
+Evil.prototype.draw = function () {
+  ctx.fillStyle = 'black';
+  ctx.fillRect(this.posX, this.posY, 20, 20);
+};
+
+Evil.prototype.randomPosition = function () {
+  const arrPos = Math.floor(Math.random() * freeEspace.length);
+  this.posX = freeEspace[arrPos].posX;
+  this.posY = freeEspace[arrPos].posY;
+};
+
+// Constructor of Equa
 
 function Equa() {
   this.posX = Math.floor(Math.random() * (79) * 10);
@@ -163,9 +250,12 @@ Equa.prototype.randomPosition = function () {
   this.posX = freeEspace[arrPos].posX;
   this.posY = freeEspace[arrPos].posY;
 };
-Equa.prototype.draw = function () {
-  ctx.fillStyle = 'pink';
-  ctx.fillRect(this.posX, this.posY, 20, 20);
+Equa.prototype.draw = function (argHero) {
+  if (!argHero.equa) {
+    // ctx.globalCompositeOperation = 'source-over';
+    ctx.fillStyle = 'pink';
+    ctx.fillRect(this.posX, this.posY, 20, 20);
+  }
 };
 
 // Construtor Nimity
@@ -179,36 +269,100 @@ Nimity.prototype.randomPosition = function () {
   const arrPos = Math.floor(Math.random() * freeEspace.length);
   this.posX = freeEspace[arrPos].posX;
   this.posY = freeEspace[arrPos].posY;
-}
+};
 
-Nimity.prototype.draw = function () {
-  ctx.fillStyle = 'blue';
-  ctx.fillRect(this.posX, this.posY, 20, 20);
+Nimity.prototype.draw = function (argHero) {
+  // ctx.globalCompositeOperation = 'source-over';
+  if (!argHero.nimity) {
+    ctx.fillStyle = 'blue';
+    ctx.fillRect(this.posX, this.posY, 20, 20);
+  }
 };
 
 let myMaze;
 let myHero;
+let myHero2;
 let myEqua;
 let myNimity;
+// let myEvil;
+let player = 1;
 
-function start() {
-  window.addEventListener('keydown', (e) => {
-    myHero.move(myHero, e);
-  }, false);
-  myMaze = new Maze();
-  myHero = new Hero();
-  myEqua = new Equa();
-  myNimity = new Nimity();
-  myMaze.CreateMaze();
-  myEqua.randomPosition();
-  myNimity.randomPosition();
-  setInterval(engine, 10);
-}
-function engine() {
+function engine(argumentHero) {
+  frame += 1;
+  const game = window.requestAnimationFrame(() => {
+    engine(argumentHero);
+  });
+  // ctx.save();
   ctx.clearRect(0, 0, 800, 600);
+  // ctx.restore();
   myMaze.draw();
   myMaze.drawMaze();
-  myHero.Draw();
-  myEqua.draw();
-  myNimity.draw();
+  myEqua.draw(argumentHero);
+  myNimity.draw(argumentHero);
+  argumentHero.Draw();
+  // ctx.save();
+  // ctx.restore();
+  // ctx.globalCompositionOperation = 'xor';
+  // myHero.drawLight();
+  // ctx.globalCompositionOperation = 'source-over';
+  // myEvil.draw();
+  // myMaze.drawDarkness(myHero);
+  // ctx.translate(myHero.posX, myHero.posY);
+  argumentHero.detectEquaNimity(myEqua, myNimity);
+  if (player === 1) document.getElementById('score1').innerHTML = argumentHero.score;
+  if (player === 2) document.getElementById('score2').innerHTML = argumentHero.score;
+  endGame(argumentHero, game);
 }
+
+function endGame(argHero, argGame) {
+  if (argHero.equa && argHero.nimity) {
+    argHero.score += (40000 - frame);
+    if (player === 1) document.getElementById('score1').innerHTML = argHero.score;
+    if (player === 2) document.getElementById('score2').innerHTML = argHero.score;
+    alert(`${argHero.name} you finish the game`);
+    window.cancelAnimationFrame(argGame);
+    player += 1;
+  }
+}
+
+function start() {
+  if (player === 1) {
+    myHero = new Hero();
+    myHero.name = 'Player 1';
+    window.addEventListener('keydown', (e) => {
+      myHero.move(myHero, e);
+    }, false);
+    myMaze = new Maze();
+    myEqua = new Equa();
+    // myEvil = new Evil();
+    myNimity = new Nimity();
+    myMaze.CreateMaze();
+    myEqua.randomPosition();
+    myNimity.randomPosition();
+    // myEvil.randomPosition();
+    // setInterval(engine, 10);
+    engine(myHero);
+  }
+  if (player === 2) {
+    myHero2 = new Hero();
+    myHero2.name = 'Player 2';
+    window.addEventListener('keydown', (e) => {
+      myHero2.move(myHero2, e);
+    }, false);
+    myMaze = new Maze();
+    myEqua = new Equa();
+    // myEvil = new Evil();
+    myNimity = new Nimity();
+    myMaze.CreateMaze();
+    myEqua.randomPosition();
+    myNimity.randomPosition();
+    // myEvil.randomPosition();
+    // setInterval(engine, 10);
+    engine(myHero2);
+  }
+}
+
+
+document.getElementById('start').onclick = function () {
+  start();
+};

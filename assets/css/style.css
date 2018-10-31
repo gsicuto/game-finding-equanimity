@@ -1,0 +1,32 @@
+*{
+  margin: 0;
+  padding: 0;
+}
+
+header {
+  background-color: aquamarine;
+  height: 50px;
+  width: 100%;
+  margin-top: 0;
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+}
+#start {
+  height: 30px;
+  width: 70px;
+  margin: 30px;
+}
+#players {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+div {
+  margin: 2px 100px;
+}
+#game {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
