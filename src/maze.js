@@ -9,6 +9,15 @@ const ctx = document.getElementById('canvas').getContext('2d');
 const walls = [];
 const freeEspace = [];
 let frame = 0;
+const rainAudio = document.createElement('AUDIO');
+rainAudio.src = 'assets/sounds/Sound Effect - Rain  Thunder.wav';
+const stepAudio = document.createElement('AUDIO');
+stepAudio.src = 'assets/sounds/footstep.wav';
+const nimityFound = document.createElement('AUDIO');
+nimityFound.src = 'assets/sounds/Nimity_pru.wav';
+const equaFound = document.createElement('AUDIO');
+equaFound.src = 'assets/sounds/Equa_crying.wav';
+
 // Constructor Maze
 
 function Maze() {
@@ -119,30 +128,22 @@ function Hero(argName) {
 
 
 Hero.prototype.Draw = function () {
+  ctx.fillStyle = 'red';
+  ctx.fillRect(this.posX, this.posY, 20, 20);
+};
+
+Hero.prototype.drawLight = function () {
   const gradient = ctx.createRadialGradient(this.posX + 10, this.posY + 10, 0, this.posX + 10, this.posY, 100);
   gradient.addColorStop(0, 'rgba(247, 247, 247, 0)');
   gradient.addColorStop(0.25, 'rgba(247, 247, 247, 0.4)');
   gradient.addColorStop(0.5, 'rgba(247, 247, 247, 0.6)');
   gradient.addColorStop(0.75, 'rgba(247, 247, 247, 0.8)');
   gradient.addColorStop(1, 'rgba(247, 247, 247, 1)');
-  ctx.fillStyle = 'red';
-  ctx.fillRect(this.posX, this.posY, 20, 20);
-  // ctx.beginPath();
-  // ctx.arc(this.posX + 10, this.posY + 10, 40, 0, 2 * Math.PI);
-  // ctx.fillStyle = gradient;
-  // ctx.fill();
-  // ctx.closePath();
-};
-
-Hero.prototype.drawLight = function () {
-  // ctx.globalCompositeOperation = 'luminosity';
-  // ctx.globalAlpha = 1;
   ctx.beginPath();
   ctx.arc(this.posX + 10, this.posY + 10, 40, 0, 2 * Math.PI);
-  // ctx.fillStyle = gradient;
-  // ctx.fill();
+  ctx.fillStyle = gradient;
+  ctx.fill();
   ctx.closePath();
-  // ctx.clip();
 };
 
 Hero.prototype.moveRight = function () {
@@ -158,7 +159,7 @@ Hero.prototype.moveUp = function () {
   if (this.detectColision()) this.posY += 10;
 };
 Hero.prototype.moveDown = function () {
-  this.posY += 10;
+  this.posY += 10; // 1 segundo a cada FPS.
   if (this.detectColision()) this.posY -= 10;
 };
 Hero.prototype.move = function (hero, e) {
@@ -201,6 +202,8 @@ Hero.prototype.detectEquaNimity = function (argEqua, argNimity) {
     && 20 + this.posY > argEqua.posY) {
     this.equa = true;
     this.score += this.score;
+    equaFound.load();
+    equaFound.play();
     argEqua.posX = 0;
     argEqua.posY = 0;
   }
@@ -210,6 +213,8 @@ Hero.prototype.detectEquaNimity = function (argEqua, argNimity) {
     && 20 + this.posY > argNimity.posY) {
     this.nimity = true;
     this.score += this.score;
+    nimityFound.load();
+    nimityFound.play();
     argNimity.posX = 0;
     argNimity.posY = 0;
   }
@@ -289,21 +294,16 @@ let player = 1;
 
 function engine(argumentHero) {
   frame += 1;
-  argumentHero.score -= 10;
+  if (frame % 60 === 0) argumentHero.score -= 10;
   const game = window.requestAnimationFrame(() => {
     engine(argumentHero);
   });
-  // ctx.save();
   ctx.clearRect(0, 0, 800, 600);
-  // ctx.restore();
   myMaze.draw();
   myMaze.drawMaze();
   myEqua.draw(argumentHero);
   myNimity.draw(argumentHero);
   argumentHero.Draw();
-  // ctx.save();
-  // ctx.restore();
-  // ctx.globalCompositionOperation = 'xor';
   // myHero.drawLight();
   // ctx.globalCompositionOperation = 'source-over';
   // myEvil.draw();
@@ -322,10 +322,12 @@ function endGame(argHero, argGame) {
     if (player === 2) document.getElementById('score2').innerHTML = argHero.score;
     alert(`${argHero.name} you finish the game`);
     player += 1;
+    rainAudio.pause();
+    stepAudio.pause();
     window.cancelAnimationFrame(argGame);
     if (player === 3) showWinner();
-    }
   }
+}
 
 
 function showWinner() {
@@ -333,16 +335,22 @@ function showWinner() {
   if (myHero.score > myHero2.score) winner = myHero;
   if (myHero2.score > myHero.score) winner = myHero2;
   ctx.fillStyle = 'red';
-  ctx.font='48px serif';
+  ctx.font = '48px serif';
+  ctx.clearRect(0, 0, 800, 600);
   ctx.fillText(`${winner.name} win with ${winner.score} score`, 50, 50);
- } 
+}
 
 function start() {
+  rainAudio.load();
+  rainAudio.play();
   if (player === 1) {
     myHero = new Hero();
     myHero.name = 'Player 1';
     window.addEventListener('keydown', (e) => {
       myHero.move(myHero, e);
+      stepAudio.load();
+      stepAudio.play();
+      setInterval(stepAudio.pause, 50);
     }, false);
     myMaze = new Maze();
     myEqua = new Equa();
