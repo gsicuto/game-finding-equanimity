@@ -1,3 +1,4 @@
+/* eslint-disable func-names */
 // My context
 
 const ctx = document.getElementById('canvas').getContext('2d');
@@ -119,17 +120,26 @@ function Hero(argName) {
   this.ligthSize = 60;
   this.posX = 30;
   this.posY = 30;
+  this.imgPosX = 0;
+  this.imgPosY = 0;
+  this.imgGuySizeW = 64;
+  this.imgGuiSizeH = 96;
+  this.frameCountW = 4;
+  this.frameCountH = 4;
+  this.frameSizeW = this.imgGuySizeW / this.frameCountW;
+  this.frameSizeH = this.imgGuiSizeH / this.frameCountH;
   this.itens = [];
   this.equa = false;
   this.score = 100000;
   this.nimity = false;
   this.heroImg = new Image();
+  this.heroImg.src = 'assets/Img/guy.png';
 }
 
 
 Hero.prototype.Draw = function () {
   ctx.fillStyle = 'red';
-  ctx.fillRect(this.posX, this.posY, 20, 20);
+  ctx.drawImage(this.heroImg, this.imgPosX, this.imgPosY, this.frameSizeW, this.frameSizeH, this.posX, this.posY, 19.2, 28.8);
 };
 
 Hero.prototype.drawLight = function () {
@@ -146,26 +156,36 @@ Hero.prototype.drawLight = function () {
   ctx.closePath();
 };
 
+// eslint-disable-next-line func-names
 Hero.prototype.moveRight = function () {
   this.posX += 10;
+  this.imgPosY = 24;
+  this.imgPosX = (frame % this.frameCountW) * this.frameSizeW;
   if (this.detectColision()) this.posX -= 10;
 };
+// eslint-disable-next-line func-names
 Hero.prototype.moveLeft = function () {
   this.posX -= 10;
+  this.imgPosY = 48;
+  this.imgPosX = (frame % this.frameCountW) * this.frameSizeW;
   if (this.detectColision()) this.posX += 10;
 };
 Hero.prototype.moveUp = function () {
   this.posY -= 10;
+  this.imgPosY = 72;
+  this.imgPosX = (frame % this.frameCountW) * this.frameSizeW;
   if (this.detectColision()) this.posY += 10;
 };
 Hero.prototype.moveDown = function () {
-  this.posY += 10; // 1 segundo a cada FPS.
+  this.posY += 10;
+  this.imgPosY = 0;
+  this.imgPosX = (frame % this.frameCountW) * this.frameSizeW;
   if (this.detectColision()) this.posY -= 10;
 };
 Hero.prototype.move = function (hero, e) {
   switch (e.keyCode) {
     case 37:
-      this.moveLeft();
+    this.moveLeft();
       break;
 
     case 39:
@@ -195,6 +215,7 @@ Hero.prototype.detectColision = function () {
   return false;
 };
 
+// eslint-disable-next-line func-names
 Hero.prototype.detectEquaNimity = function (argEqua, argNimity) {
   if (this.posX < argEqua.posX + 20
     && this.posX + 20 > argEqua.posX
@@ -248,6 +269,8 @@ Evil.prototype.randomPosition = function () {
 function Equa() {
   this.posX = Math.floor(Math.random() * (79) * 10);
   this.posY = Math.floor(Math.random() * (59) * 10);
+  this.equaImg = new Image();
+  this.equaImg.src = 'assets/Img/Equa.png';
   this.sound;
 }
 Equa.prototype.randomPosition = function () {
@@ -257,9 +280,7 @@ Equa.prototype.randomPosition = function () {
 };
 Equa.prototype.draw = function (argHero) {
   if (!argHero.equa) {
-    // ctx.globalCompositeOperation = 'source-over';
-    ctx.fillStyle = 'pink';
-    ctx.fillRect(this.posX, this.posY, 20, 20);
+    ctx.drawImage(this.equaImg, 288, 192, 32, 48, this.posX, this.posY, 19.2, 28.8);
   }
 };
 
@@ -268,6 +289,8 @@ Equa.prototype.draw = function (argHero) {
 function Nimity() {
   this.posX = Math.floor(Math.random() * (79) * 10);
   this.posY = Math.floor(Math.random() * (59) * 10);
+  this.nimityImg = new Image();
+  this.nimityImg.src = 'assets/Img/nimity.png';
   this.sound;
 }
 Nimity.prototype.randomPosition = function () {
@@ -279,8 +302,10 @@ Nimity.prototype.randomPosition = function () {
 Nimity.prototype.draw = function (argHero) {
   // ctx.globalCompositeOperation = 'source-over';
   if (!argHero.nimity) {
-    ctx.fillStyle = 'blue';
-    ctx.fillRect(this.posX, this.posY, 20, 20);
+
+    ctx.drawImage(this.nimityImg, 0, 0, 38.333, 36.25, this.posX, this.posY, 38.333, 36.25);
+    // ctx.fillStyle = 'blue';
+    // ctx.fillRect(this.posX, this.posY, 20, 20);
   }
 };
 
@@ -291,6 +316,30 @@ let myEqua;
 let myNimity;
 // let myEvil;
 let player = 1;
+
+function showWinner() {
+  let winner;
+  if (myHero.score > myHero2.score) winner = myHero;
+  if (myHero2.score > myHero.score) winner = myHero2;
+  ctx.fillStyle = 'red';
+  ctx.font = '48px serif';
+  ctx.clearRect(0, 0, 800, 600);
+  ctx.fillText(`${winner.name} win with ${winner.score} score`, 50, 50);
+}
+
+function endGame(argHero, argGame) {
+  if (argHero.equa && argHero.nimity) {
+    // argHero.score += (40000 - frame);
+    if (player === 1) document.getElementById('score1').innerHTML = argHero.score;
+    if (player === 2) document.getElementById('score2').innerHTML = argHero.score;
+    alert(`${argHero.name} you finish the game`);
+    player += 1;
+    rainAudio.pause();
+    stepAudio.pause();
+    window.cancelAnimationFrame(argGame);
+    if (player === 3) showWinner();
+  }
+}
 
 function engine(argumentHero) {
   frame += 1;
@@ -313,31 +362,6 @@ function engine(argumentHero) {
   if (player === 1) document.getElementById('score1').innerHTML = argumentHero.score;
   if (player === 2) document.getElementById('score2').innerHTML = argumentHero.score;
   endGame(argumentHero, game);
-}
-
-function endGame(argHero, argGame) {
-  if (argHero.equa && argHero.nimity) {
-    // argHero.score += (40000 - frame);
-    if (player === 1) document.getElementById('score1').innerHTML = argHero.score;
-    if (player === 2) document.getElementById('score2').innerHTML = argHero.score;
-    alert(`${argHero.name} you finish the game`);
-    player += 1;
-    rainAudio.pause();
-    stepAudio.pause();
-    window.cancelAnimationFrame(argGame);
-    if (player === 3) showWinner();
-  }
-}
-
-
-function showWinner() {
-  let winner;
-  if (myHero.score > myHero2.score) winner = myHero;
-  if (myHero2.score > myHero.score) winner = myHero2;
-  ctx.fillStyle = 'red';
-  ctx.font = '48px serif';
-  ctx.clearRect(0, 0, 800, 600);
-  ctx.fillText(`${winner.name} win with ${winner.score} score`, 50, 50);
 }
 
 function start() {
@@ -381,7 +405,6 @@ function start() {
     engine(myHero2);
   }
 }
-
 
 document.getElementById('start').onclick = function () {
   start();
