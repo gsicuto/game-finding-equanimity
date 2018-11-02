@@ -39,8 +39,12 @@ h1{
   display: flex;
   flex-direction: column;
   align-items: center;
+  justify-content: flex-start;
 }
 #players {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
   font-family: Dosis;
   display: flex;
   justify-content: center;
@@ -51,7 +55,7 @@ h1{
   margin: 2px 100px;
 } */
 #display {
-  margin-top: 50px;
+  margin: 5px 40px;
 }
 
 ul{
@@ -97,4 +101,42 @@ a:hover {
   margin-bottom: 20px;
   font-family: Orbitron;
   color: white;
+}
+#creator{
+  background-color: purple;
+  display: flex;
+  height: 714px;;
+  justify-content: space-around;
+  align-items: flex-start;
+  color: black;
+}
+
+#creator div{
+  font-family: Dosis;
+  margin: 50px 0px 50px 0px;
+  padding: 20px;
+  width: 300px;
+  height: 350px;
+}
+#creator div h2{
+  margin-bottom: 20px;
+  font-family: Orbitron;
+  color: white;
+}
+
+#profile{
+  margin-top: 100px;
+    border-radius: 50%;
+    height: 150px;
+
+}
+#creator img{
+  height: 50px;
+}
+
+#creator ul{
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: center;
 }
