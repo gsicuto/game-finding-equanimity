@@ -1,26 +1,47 @@
+@import url('https://fonts.googleapis.com/css?family=Dosis|Orbitron');
+
 *{
   margin: 0;
   padding: 0;
   font: white;
 }
-body {
-  background-image: url('../Img/backGroundPage.jpeg');
+
+#title{
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+}
+header img{
+  height: 50px;
 }
 header {
-  background-color: purple;
+  position: fixed;
+  background-color: gray;
   height: 50px;
   width: 100%;
   margin-top: 0;
   display: flex;
-  justify-content: space-around;
+  justify-content: space-between;
   align-items: center;
+}
+h1{
+  font-family: Orbitron;
+  padding-left: 20px;
 }
 #start {
   height: 30px;
   width: 70px;
-  margin: 30px;
+  margin-top: 10px;
+}
+#game{
+  background-image: url('../Img/backGroundPage.jpeg');
+  padding-top: 50px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 #players {
+  font-family: Dosis;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -29,11 +50,13 @@ header {
 /* div {
   margin: 2px 100px;
 } */
-#game {
-  margin-top: 20px;
+#display {
+  margin-top: 50px;
 }
 
 ul{
+  font-family: Dosis;
+  margin-left: 40px;
   display: flex;
   justify-content: space-between
 }
@@ -41,4 +64,37 @@ ul{
 li {
   margin: 10px;
   list-style-type: none;
+}
+
+a {
+  text-decoration: none;
+  color: white;
+}
+a:hover {
+  text-decoration: none;
+  color: purple;
+  font-size: 20px;
+}
+
+#info{
+  background-color: rgb(95, 95, 95);
+  display: flex;
+  height: 714px;;
+  justify-content: space-around;
+  align-items: center;
+  color: black;
+}
+
+#info div{
+  font-family: Dosis;
+  border: 2px solid gray;
+  margin: 50px 0px 50px 0px;
+  padding: 20px;
+  width: 300px;
+  height: 350px;
+}
+#info div h2{
+  margin-bottom: 20px;
+  font-family: Orbitron;
+  color: white;
 }

@@ -18,7 +18,8 @@ Our hero need to find Equa and Nimity in the darkness.
 
 ## Game 
 
-The consiste in a maze where you need to fasted find two characters who appear randomly on the maze.
+2 players
+The game consiste in a maze where you need to find two characters the fasted way posible
 Every player start with 100,000 of score, that score decrease a long the time, when one of the characters is founded the is score is increased the same value the player have in that moment.
 ```
 Hero.prototype.detectEquaNimity = function (argEqua, argNimity) {

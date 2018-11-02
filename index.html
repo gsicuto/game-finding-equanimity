@@ -11,32 +11,63 @@
 
 <body>
   <header>
-    <img src="#" alt="">
-    <h1>Finding Equa & Nimity</h1>
+    <div id="title">
+      <img src="PiledRocks.png" alt="Game logo">
+      <h1>Finding Equa & Nimity</h1>
+    </div>
     <ul>
-      <li>Home</li>
-      <li>Game</li>
-      <li>about</li>
+      <li> <a href="#game">Game</a> </li>
+      <li><a href="#info">Info</a></li>
+      <li><a href="#">Creator</a></li>
     </ul>
-    <button id="start">Start</button>
   </header>
-  <section id="players">
-    <div id="player 1">
-      <h3>Player 1</h3>
-      <h4>Name:</h4>
-      <p></p>
-      <h4>Score:</h4>
-      <p id="score1"></p>
+  <section id="game">
+    <button id="start">Start</button>
+    <div id="players">
+      <div id="player 1">
+        <h3>Player 1</h3>
+        <h4>Score:</h4>
+        <p id="score1"></p>
+      </div>
+      <div id="display">
+        <canvas id="canvas" height="600" width="800"></canvas>
+      </div>
+      <div id="player 2">
+        <h3>Player 2</h3>
+        <h4>Score:</h4>
+        <p id="score2"></p>
+      </div>
     </div>
-    <div id="game">
-      <canvas id="canvas" height="600" width="800"></canvas>
+  </section>
+  <section id="info">
+    <div>
+      <h2>History</h2>
+      <p><span>Equa</span> is a little child with 3 years old, she doesn't sleep without her plush cat <span>Nimity</span>.
+          In one raining night, the light is off, and Equa is hidden your self in the house, because can't find Nimity.
+          Our hero need to find Equa and Nimity in the darkness.</p>
     </div>
-    <div id="player 2">
-      <h3>Player 2</h3>
-      <h4>Name:</h4>
+
+    <div>
+      <h2>Rules</h2>
+      <p>
+          The game consiste in a maze where you need to find two characters the fasted way posible
+          Every player start with 100,000 of score, that score decrease a long the time, when one of the characters is founded the is score is increased the same value the player have in that moment.
+          Press Start first to Player 1, when finished press start again to start Player 2 round, in the end the game shows who founded first <span>Equa</span> & <span>Nimity</span>
+        </p>
+    </div>
+
+    <div>
+      <h2>Equanimity</h2>
+      <p>Equanimity (Latin: æquanimitas, having an even mind; aequus even; animus mind/soul) is a state of psychological stability and composure which is undisturbed by experience of or exposure to emotions, pain, or other phenomena that may cause others to lose the balance of their mind." <a href="https://en.wikipedia.org/wiki/Equanimity">Wikipedia</a></p>
+    </div>
+
+  </section>
+  <section id="creator">
+    <div>
+      <img src="" alt="">
+    </div>
+    <div>
       <p></p>
-      <h4>Score:</h4>
-      <p id="score2"></p>
     </div>
   </section>
   <script src="src/map.js"></script>
