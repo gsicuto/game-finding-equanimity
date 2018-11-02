@@ -12,7 +12,7 @@ header {
   width: 100%;
   margin-top: 0;
   display: flex;
-  justify-content: flex-end;
+  justify-content: space-around;
   align-items: center;
 }
 #start {
@@ -31,4 +31,14 @@ header {
 } */
 #game {
   margin-top: 20px;
+}
+
+ul{
+  display: flex;
+  justify-content: space-between
+}
+
+li {
+  margin: 10px;
+  list-style-type: none;
 }
